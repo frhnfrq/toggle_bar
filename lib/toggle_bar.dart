@@ -17,7 +17,7 @@ class ToggleBar extends StatefulWidget {
   final Color backgroundColor;
 
   /// Background border of the toggle bar.
-  final BoxBorder backgroundBorder;
+  final BoxBorder? backgroundBorder;
 
   /// Color of the selected tab.
   final Color selectedTabColor;
@@ -29,10 +29,10 @@ class ToggleBar extends StatefulWidget {
   final Color textColor;
 
   /// Labels to be displayed as tabs in the toggle bar.
-  final List<String> labels;
+  final List<String>? labels;
 
   /// Callback function which returns the index of the currently selected tab.
-  final Function(int) onSelectionUpdated;
+  final Function(int)? onSelectionUpdated;
 
   /// Border radius of the bar and selected tab indicator.
   final double borderRadius;
@@ -60,9 +60,9 @@ class _ToggleBarState extends State<ToggleBar> {
 
   @override
   void initState() {
-    _hashMap = LinkedHashMap.fromIterable(widget.labels,
+    _hashMap = LinkedHashMap.fromIterable(widget.labels!,
         value: (value) => value = false);
-    _hashMap[widget.labels[0]] = true;
+    _hashMap[widget.labels![0]] = true;
 
     super.initState();
   }
@@ -79,14 +79,14 @@ class _ToggleBarState extends State<ToggleBar> {
                   border: widget.backgroundBorder,
                   borderRadius: BorderRadius.circular(widget.borderRadius)),
               child: ListView.builder(
-                itemCount: widget.labels.length,
+                itemCount: widget.labels!.length,
                 scrollDirection: Axis.horizontal,
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return GestureDetector(
                       child: Container(
                           width: (constraints.maxWidth - 16) /
-                              widget.labels.length,
+                              widget.labels!.length,
                           child: Center(
                             child: Text(_hashMap.keys.elementAt(index),
                                 textAlign: TextAlign.center,
@@ -101,12 +101,12 @@ class _ToggleBarState extends State<ToggleBar> {
                                   : null,
                               borderRadius: BorderRadius.circular(widget.borderRadius))),
                       onHorizontalDragUpdate: (dragUpdate) async {
-                        int calculatedIndex = ((widget.labels.length *
+                        int calculatedIndex = ((widget.labels!.length *
                             (dragUpdate.globalPosition.dx /
                                 (constraints.maxWidth - 16)))
                             .round() -
                             1)
-                            .clamp(0, widget.labels.length - 1);
+                            .clamp(0, widget.labels!.length - 1);
 
                         if (calculatedIndex != _selectedIndex) {
                           _updateSelection(calculatedIndex);
@@ -126,7 +126,7 @@ class _ToggleBarState extends State<ToggleBar> {
   _updateSelection(int index) {
     setState(() {
       _selectedIndex = index;
-      widget.onSelectionUpdated(_selectedIndex);
+      widget.onSelectionUpdated!(_selectedIndex);
       _hashMap.updateAll((label, selected) => selected = false);
       _hashMap[_hashMap.keys.elementAt(index)] = true;
     });
